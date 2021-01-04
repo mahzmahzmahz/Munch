@@ -10,4 +10,6 @@ class Restaurant < ActiveRecord::Base
   has_many :locations, through: :restaurant_locations
 
   
+
+  
 end

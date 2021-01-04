@@ -1,4 +1,6 @@
 require_relative '../config/environment'
+require "tty-prompt"
 
-app = nameOfYourApp.new
-app.run
+CLI.welcome
+CLI.login_menu
+
