@@ -20,6 +20,7 @@ GEM
     concurrent-ruby (1.1.7)
     faker (2.15.1)
       i18n (>= 1.6, < 2)
+    geocoder (1.6.4)
     i18n (1.8.5)
       concurrent-ruby (~> 1.0)
     method_source (1.0.0)
@@ -73,6 +74,7 @@ DEPENDENCIES
   artii (~> 2.1, >= 2.1.2)
   colorize
   faker
+  geocoder
   pry
   rake
   require_all
