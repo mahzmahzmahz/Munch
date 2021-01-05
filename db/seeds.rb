@@ -1,3 +1,5 @@
+require 'net/http'
+
 User.destroy_all
 Restaurant.destroy_all
 Style.destroy_all
@@ -30,6 +32,10 @@ style2 = Style.create(cuisine: "Italian")
 location1 = Location.create(borough: "Queens", neighborhood: "Flushing")
 location2 = Location.create(borough: "Brooklyn", neighborhood: "Greenpoint")
 
+
+response = Net::HTTP.get_response('https://developers.zomato.com/api/v2.1/search?count=4&lat=user_lat&lon=user_lon')
+body = response.body
+parsed = JSON.paese(body)
 
 
 puts "######## SEEDED #########"
