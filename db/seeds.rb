@@ -22,6 +22,8 @@ elvis = User.create(username: "Elvis", password: "0000")
 rest1 = Restaurant.create(name: "Munchies", price_point: "$$$", description: "The best joint in town!", street_address: "123 East St")
 rest2 = Restaurant.create(name: "Funkies", price_point: "$$", description: "The 2nd best joint in town!", street_address: "456 East St")
 
+UserRestaurant.create(user_id: alex, restaurant_id: rest1)
+
 style1 = Style.create(cuisine: "Chinese")
 style2 = Style.create(cuisine: "Italian")
 

@@ -51,4 +51,14 @@ class CLI
       end
     end
 
+    def self.login
+       user = @@prompt.ask "Please enter Username"
+       sleep (0.5)
+       password = @@prompt.mask "Please enter Password"
+       return_user = User.all.select{|user| user if user.username == user && user.password == password}
+        puts "Welcome back #{user.capitalize}!"
+    end
+
+
+
   end
