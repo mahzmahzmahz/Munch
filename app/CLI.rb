@@ -57,6 +57,7 @@ class CLI
         if User.find_by(username: username, password: password)
             @user = User.find_by(username: username, password: password)
             @user
+            CLI.main_menu
         else 
             puts "Unknown User or Password"
             sleep(1)
@@ -77,11 +78,30 @@ class CLI
     end
 
     def self.main_menu
-
+        system 'clear'
+        @user.reload 
+        sleep(0.5)
+        @prompt.select("What Brings You Here?") do |menu|
+            menu.choice "Restaurant History", -> {CLI.rest_history}
+            menu.choice "View my favorite restaurants", -> {CLI.fav_restaurant}
+            menu.choice "Find a new spot", -> {CLI.new_spot}
+            menu.choice "Exit", -> {CLI.exit_helper}
+        end
+        
     end
+
+    def self.exit_helper
+        puts "Cya l8rr, hope you don't starve."
+    end
+
+    def self.rest_history
+        binding.pry
+        
+        restaurants = UserRestaurant.select{|user_rest| user_rest.user_id == @user.id}
+       puts restaurants
+    end
+
 
 end
 
 
-
-#use for signup  hungry = prompt.yes?("Are You Hungry?")
