@@ -19,16 +19,16 @@ UserRestaurant.reset_pk_sequence
 alex = User.create(username: "Alex", password: "1234")
 elvis = User.create(username: "Elvis", password: "0000")
 
-rest1 = Restaurant.create(name: "Munchies", price_point: "$$$", description: "The best joint in town!", street_address: "123 East St")
-rest2 = Restaurant.create(name: "Funkies", price_point: "$$", description: "The 2nd best joint in town!", street_address: "456 East St")
+rest1 = Restaurant.create(name: "Munchies", price_point: "$$$", description: "The best joint in town!", street_address: "Brooklyn")
+rest2 = Restaurant.create(name: "Funkies", price_point: "$$", description: "The 2nd best joint in town!", street_address: "Queens")
 
 UserRestaurant.create(user_id: alex.id, restaurant_id: rest1.id, favorite?: true)
 
 style1 = Style.create(cuisine: "Chinese")
 style2 = Style.create(cuisine: "Italian")
 
-location1 = Location.create(borough: "Queens", neighborhood: "Flushing")
-location2 = Location.create(borough: "Brooklyn", neighborhood: "Greenpoint")
+# location1 = Location.create(borough: "Queens", neighborhood: "Flushing")
+# location2 = Location.create(borough: "Brooklyn", neighborhood: "Greenpoint")
 
 
 

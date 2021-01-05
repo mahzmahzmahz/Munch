@@ -10,13 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_05_191517) do
+ActiveRecord::Schema.define(version: 2021_01_05_214425) do
 
   create_table "locations", force: :cascade do |t|
-    t.string "borough"
-    t.string "neighborhood"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.float "longitude"
+    t.float "latitude"
+    t.string "address"
   end
 
   create_table "restaurant_locations", force: :cascade do |t|
