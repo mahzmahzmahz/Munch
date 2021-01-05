@@ -4,15 +4,15 @@ Style.destroy_all
 Location.destroy_all
 # RestaurantStyle.destroy_all
 # RestaurantLocation.destroy_all
-# UserRestaurant.destroy_all
+UserRestaurant.destroy_all
 
 User.reset_pk_sequence
 Restaurant.reset_pk_sequence
 Style.reset_pk_sequence
 Location.reset_pk_sequence
-# RestaurantStyle.reset_pk_sequence
-# RestaurantLocation.reset_pk_sequence
-# UserRestaurant.reset_pk_sequence
+#RestaurantStyle.reset_pk_sequence
+#RestaurantLocation.reset_pk_sequence
+UserRestaurant.reset_pk_sequence
 
 # ########### different ways to write your seeds ############
 
@@ -22,13 +22,14 @@ elvis = User.create(username: "Elvis", password: "0000")
 rest1 = Restaurant.create(name: "Munchies", price_point: "$$$", description: "The best joint in town!", street_address: "123 East St")
 rest2 = Restaurant.create(name: "Funkies", price_point: "$$", description: "The 2nd best joint in town!", street_address: "456 East St")
 
-UserRestaurant.create(user_id: alex, restaurant_id: rest1)
+UserRestaurant.create(user_id: alex.id, restaurant_id: rest1.id, favorite?: true)
 
 style1 = Style.create(cuisine: "Chinese")
 style2 = Style.create(cuisine: "Italian")
 
 location1 = Location.create(borough: "Queens", neighborhood: "Flushing")
 location2 = Location.create(borough: "Brooklyn", neighborhood: "Greenpoint")
+
 
 
 puts "######## SEEDED #########"

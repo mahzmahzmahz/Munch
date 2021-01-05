@@ -95,11 +95,33 @@ class CLI
     end
 
     def self.rest_history
-        binding.pry
-        
         restaurants = UserRestaurant.select{|user_rest| user_rest.user_id == @user.id}
-       puts restaurants
+        restaurants.map{|rest| puts rest.restaurant.name}
+        sleep(1)
+        choice = @prompt.select("Main menu?") do |menu|
+            menu.choice "Yes"
+            menu.choice "No"
+
+            if choice == "Yes"
+                CLI.main_menu
+            else
+                system 'clear'
+                CLI.rest_history
+            end
+            
+
+            
+        end
+    
+        
     end
+
+    # def self.fav_restaurant
+    #     restaurants = UserRestaurant.select{|user_rest| user_rest.user_id == @user.id && favorite? == true}
+    #     restaurants.map{|rest| puts rest.restaurant.name}
+    # end
+
+
 
 
 end
