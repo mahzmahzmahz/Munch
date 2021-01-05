@@ -21,6 +21,7 @@
 require "tty-prompt"
 require "tty-font"
 require "pry"
+require 'geocoder'
 
 
 class CLI
@@ -29,6 +30,7 @@ class CLI
 
   @prompt = TTY::Prompt.new
 
+  $pizza = @prompt.decorate('🍕')
 
   def self.welcome
       system ('clear')
@@ -53,7 +55,7 @@ class CLI
 
     def self.login
         username = @prompt.ask("What is your Username?")
-        password = @prompt.mask("What is your Password?")
+        password = @prompt.mask("What is your Password?", mask: $pizza)
         if User.find_by(username: username, password: password)
             @user = User.find_by(username: username, password: password)
             @user
@@ -72,9 +74,9 @@ class CLI
             puts ("Sorry Username is Taken")
             username = @prompt.ask ("Please create a Username")
         end
-        # pizza = @@prompt.decorate(‘🍕 ‘)
-        password = @prompt.mask ("Please create a Password")  
+        password = @prompt.mask ("Please create a Password", mask: $pizza)  
         User.create(username: username, password: password)
+        CLI.main_menu
     end
 
     def self.main_menu
@@ -91,30 +93,67 @@ class CLI
     end
 
     def self.exit_helper
-        puts "Cya l8rr, hope you don't starve."
+        system 'clear'
+        options = ["Cya l8rr, hope you don't starve.", "Ok bye, btw you are rocking that outfit today!", "Word. Catch you on the flip!"]
+        puts options.shuffle.first
     end
 
     def self.rest_history
         restaurants = UserRestaurant.select{|user_rest| user_rest.user_id == @user.id}
-        restaurants.map{|rest| puts rest.restaurant.name}
+        if restaurants == []
+            sleep(0.5)
+            puts "Looks like you haven't been out yet!"
+        else
+            restaurants.map{|rest| puts rest.restaurant.name}
+        end
+
         sleep(1)
-        choice = @prompt.select("Main menu?") do |menu|
-            menu.choice "Yes"
-            menu.choice "No"
-
-            if choice == "Yes"
-                CLI.main_menu
-            else
-                system 'clear'
-                CLI.rest_history
-            end
-            
-
-            
+        @prompt.select("Would you like to return to the main Menu, or are we all good here?") do |menu|
+            menu.choice "Main Menu", -> {CLI.main_menu}
+            menu.choice "I'm all good, thx!", -> {CLI.exit_helper}
         end
     
         
     end
+
+    def self.new_spot
+        random_phrases = ["Oh wow, my cousin lives there! Do you know a large man named Tommy?", "Oh jeez, the subway there is a mess huh?", "I lived there when I moved here! It's the best, right?"]
+        cuisines = ["Italian", "American", "Chinese", "Indian", "Fast-food", "Pizza", "Mexican", "Other"]
+        boroughs = ["Staten Island", "Queens", "Brooklyn","The Bronx", "Manhattan", "I don't live in NYC..."]
+        price_options = ["$", "$$", "$$$"]
+        cuisine_choice = @prompt.select("What are you craving?", cuisines, min: 1)
+        system 'clear'
+        puts "Nice, we love #{cuisine_choice}!"
+        sleep(0.5)
+        user_location = @prompt.select("Next up, where are you tryin' to eat in the 5 boroughs?", boroughs, min: 1)
+            if user_location == "I don't live in NYC..."
+                system 'clear'
+                puts "You're not from NYC?! Hmmm, I don't think we can help you today!"
+                sleep(3)
+                CLI.main_menu
+            else
+        system 'clear'
+        puts random_phrases.shuffle.first
+        user_price_point = @prompt.select("And finally, how much money do you want to spend?", price_options, min: 1)
+                if user_price_point == "$"
+                    puts "Ballin' on a budget. Respect!"
+                elsif user_price_point == "$$"
+                    puts "Love it, let's find something for ya - "
+                else
+                    puts "Fancy-schmancy ova here! Good for you!"
+                end
+            end
+        sleep(3)
+        puts "Ok, alex now what"
+        
+
+        #CLI.exit_helper
+
+
+
+    end
+
+    
 
     # def self.fav_restaurant
     #     restaurants = UserRestaurant.select{|user_rest| user_rest.user_id == @user.id && favorite? == true}
