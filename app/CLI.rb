@@ -74,7 +74,7 @@ class CLI
             puts ("Sorry Username is Taken")
             username = @prompt.ask ("Please create a Username")
         end
-        password = @prompt.mask ("Please create a Password", mask: $pizza)  
+        password = @prompt.mask("Please create a Password", mask: $pizza)  
         User.create(username: username, password: password)
         CLI.main_menu
     end
@@ -116,6 +116,8 @@ class CLI
         
     end
 
+
+
     def self.new_spot
         random_phrases = ["Oh wow, my cousin lives there! Do you know a large man named Tommy?", "Oh jeez, the subway there is a mess huh?", "I lived there when I moved here! It's the best, right?"]
         cuisines = ["Italian", "American", "Chinese", "Indian", "Fast-food", "Pizza", "Mexican", "Other"]
@@ -144,7 +146,11 @@ class CLI
                 end
             end
         sleep(3)
-        puts "Ok, alex now what"
+        suggestion = Restaurant.all.select{|rest| rest.name if rest.price_point == user_price_point && rest.street_address == user_location}
+        rec = suggestion[0].name
+        puts "Looks like the perfect place for you is #{rec}"
+        sleep(4)
+
         
 
         #CLI.exit_helper
