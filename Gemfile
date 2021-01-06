@@ -18,3 +18,4 @@ gem 'ruby2d'
 gem 'geocoder'
 gem 'json'
 gem "rest-client"
+gem 'zomato'

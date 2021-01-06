@@ -184,9 +184,18 @@ class CLI
 
 
     def self.api_restaurants(location, price_point, cuisine)
+        #binding.pry
         lat_lon = CLI.geocode(location)
-        url = zomato_url
-        return [Restaurant.create(name: "Munchies", price_point: "$$$", description: "The best joint in town!", street_address: lat_lon.to_s)]
+        user_lat = lat_lon[:lat]
+        user_lon = lat_lon[:lon]
+        # url = zomato_url
+        # return [Restaurant.create(name: "Munchies", price_point: "$$$", description: "The best joint in town!", street_address: lat_lon.to_s)]
+        response =  RestClient.get "https://developers.zomato.com/api/v2.1/search?count=5&lat=#{user_lat}&lon=#{user_lon}",
+            {content_type: :json, accept: :json, "user-key": "285cd5fbd4736f1cfef4d09c58ef09b4"}
+    # response.parse 
+
+    parsed = JSON.parse(response)
+    puts parsed["restaurants"][0]["restaurant"]["location"]["locality"]
         #returns list of restaurants
     end
 
