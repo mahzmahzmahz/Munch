@@ -7,29 +7,34 @@ class User < ActiveRecord::Base
     attr_accessor :favorites 
     @@favorites = []
 
-    def user_restaurants 
-        self.restaurants.uniq 
-    end
+    # def user_restaurants 
+    #     self.restaurants.uniq 
+    # end
 
-    def restaurant_name
-        binding.pry
-        user_restaurants.map{|rest| rest.name}
-    end
-
-
-    def add_restaurant_to_favorites(restaurant)
-        #binding.pry
-        favorite = UserRestaurant.create(user_id: self.id, restaurant_id: restaurant.id)
-        
-        @@favorite << favorite 
-    end
-
-    # def delete_restaurant_from_favorites(restaurant)
-    #     UserRestaurant.delete(user_id: self.id, restaurant_id: restaurant.id)
+    # def restaurant_name
+    #     binding.pry
+    #     user_restaurants.map{|rest| rest.name}
     # end
 
 
+    # def add_restaurant_to_favorites(restaurant)
+    #     #binding.pry
+    #     favorite = UserRestaurant.create(user_id: self.id, restaurant_id: restaurant.id)
+        
+    #     @@favorite << favorite 
+    # end
 
+def add_restaurant_to_favorites(restaurant)
+    UserRestaurant.create(user_id: self.id, restaurant_id: restaurant)
+end
+
+def remove_restaurant_from_favs(restaurant)
+    UserRestaurant.where(user_id: self.id, restaurant_id: restaurant).destory_all
+end
+
+def remove_profile
+    self.destroy
+end
   
 
 end

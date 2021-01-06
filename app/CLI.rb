@@ -1,23 +1,3 @@
-# class YourAppName
-#   # here will be your CLI!
-#   # it is not an AR class so you need to add attr
-
-#   def run
-#     welcome
-#     # login_or_signup
-#     # wanna_see_favs?
-#     # get_joke(what_subject)
-#   end
-
-
-#   private
-
-#   def welcome
-#     system 'clear'
-
-
-  
-# end
 require "tty-prompt"
 require "tty-font"
 require "pry"
@@ -76,7 +56,7 @@ class CLI
         end
         password = @prompt.mask("Please create a Password", mask: $pizza)  
         User.create(username: username, password: password)
-        CLI.main_menu
+        CLI.login_menu
     end
 
     def self.main_menu
@@ -87,6 +67,7 @@ class CLI
             menu.choice "Restaurant History", -> {CLI.rest_history}
             menu.choice "View my favorite restaurants", -> {CLI.fav_restaurant}
             menu.choice "Find a new spot", -> {CLI.new_spot}
+            menu.choice "Delete Profile", -> {CLI.bye_bye}
             menu.choice "Exit", -> {CLI.exit_helper}
         end
         
@@ -114,6 +95,11 @@ class CLI
         end
     
         
+    end
+
+
+    def self.bye_bye
+        @user.remove_profile
     end
 
 
@@ -190,9 +176,6 @@ class CLI
     #     restaurants = UserRestaurant.select{|user_rest| user_rest.user_id == @user.id && favorite? == true}
     #     restaurants.map{|rest| puts rest.restaurant.name}
     # end
-
-
-
 
 end
 

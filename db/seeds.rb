@@ -35,9 +35,10 @@ style2 = Style.create(cuisine: "Italian")
 # location2 = Location.create(borough: "Brooklyn", neighborhood: "Greenpoint")
 
 
-response = Net::HTTP.get_response('https://developers.zomato.com/api/v2.1/search?count=4&lat=user_lat&lon=user_lon')
-body = response.body
-parsed = JSON.paese(body)
+# response = Net::HTTP.get_response("https://developers.zomato.com/api/v2.1/search?count=6&lat=#{user.lat}&lon=#{user.lon}")
+# body = response.body
+# parsed = JSON.paese(body)
+# {interlope into the borough, long $ lat needs to be interp into url}
 
 
 puts "######## SEEDED #########"
