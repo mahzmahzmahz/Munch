@@ -16,3 +16,5 @@ gem "tty-font"
 gem 'artii', '~> 2.1', '>= 2.1.2'
 gem 'ruby2d'
 gem 'geocoder'
+gem 'json'
+gem "rest-client"

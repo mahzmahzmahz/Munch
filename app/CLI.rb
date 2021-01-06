@@ -56,6 +56,9 @@ class CLI
         end
         password = @prompt.mask("Please create a Password", mask: $pizza)  
         User.create(username: username, password: password)
+        system 'clear'
+        puts "Welcome to the party, pal! Let's make sure that works - "
+        sleep(2)
         CLI.login_menu
     end
 
@@ -81,6 +84,7 @@ class CLI
 
     def self.rest_history
         restaurants = UserRestaurant.select{|user_rest| user_rest.user_id == @user.id}
+
         if restaurants == []
             sleep(0.5)
             puts "Looks like you haven't been out yet!"
@@ -89,17 +93,38 @@ class CLI
         end
 
         sleep(1)
-        @prompt.select("Would you like to return to the main Menu, or are we all good here?") do |menu|
+        @prompt.select("Would you like to return to the main Menu, clear your list, or are we all good here?") do |menu|
             menu.choice "Main Menu", -> {CLI.main_menu}
+            menu.choice "Clear My History", -> {CLI.clear_history}
             menu.choice "I'm all good, thx!", -> {CLI.exit_helper}
         end
     
         
     end
 
+    def self.clear_history
+        system 'clear'
+        ask = @prompt.yes?("Are you sure you want to get rid of all your restaurants?")
+        if ask == true
+            rest = @user.restaurants
+            rest.destroy_all
+            system 'clear'
+            puts "Cool, not like we worked hard putting that together for you or anything..."
+            sleep (4)
+            CLI.main_menu
+        else
+            system 'clear'
+            CLI.rest_history
+        end
+        #binding.pry
+    end
+
+    
 
     def self.bye_bye
         @user.remove_profile
+        system 'clear'
+        puts "Whatever, you'll be back..."
     end
 
 
@@ -160,6 +185,7 @@ class CLI
 
     def self.api_restaurants(location, price_point, cuisine)
         lat_lon = CLI.geocode(location)
+        url = zomato_url
         return [Restaurant.create(name: "Munchies", price_point: "$$$", description: "The best joint in town!", street_address: lat_lon.to_s)]
         #returns list of restaurants
     end

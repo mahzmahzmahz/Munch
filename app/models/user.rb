@@ -29,7 +29,8 @@ def add_restaurant_to_favorites(restaurant)
 end
 
 def remove_restaurant_from_favs(restaurant)
-    UserRestaurant.where(user_id: self.id, restaurant_id: restaurant).destory_all
+    rest = UserRestaurant.where(user_id: self.id, restaurant_id: restaurant)
+    rest.destroy_all
 end
 
 def remove_profile
