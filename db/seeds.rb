@@ -23,6 +23,8 @@ elvis = User.create(username: "Elvis", password: "0000")
 
 rest1 = Restaurant.create(name: "Munchies", price_point: "$$$", description: "The best joint in town!", street_address: "Brooklyn")
 rest2 = Restaurant.create(name: "Funkies", price_point: "$$", description: "The 2nd best joint in town!", street_address: "Queens")
+rest3 = Restaurant.create(name: "Tim's", price_point: "$$", description: "The 3rd best joint in town!", street_address: "Queens")
+rest4 = Restaurant.create(name: "Mike's", price_point: "$$", description: "The 4th best joint in town!", street_address: "Queens")
 
 UserRestaurant.create(user_id: alex.id, restaurant_id: rest1.id, favorite?: true)
 
@@ -119,3 +121,6 @@ puts "######## SEEDED #########"
 
 
 # puts "🔥 🔥 🔥 🔥 "
+
+
+
