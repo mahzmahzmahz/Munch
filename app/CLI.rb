@@ -133,7 +133,7 @@ class CLI
         random_phrases = ["Oh wow, my cousin lives there! Do you know a large man named Tommy?", "Oh jeez, the subway there is a mess huh?", "I lived there when I moved here! It's the best, right?"]
         cuisines = ["Italian", "American", "Chinese", "Indian", "Fast-food", "Pizza", "Mexican", "Other"]
         boroughs = ["Staten Island", "Queens", "Brooklyn","The Bronx", "Manhattan", "I don't live in NYC..."]
-        price_options = ["$", "$$", "$$$"]
+        #price_options = [1, 2, "$$$"]
         cuisine_choice = @prompt.select("What are you craving?", cuisines, min: 1)
         system 'clear'
         puts "Nice, we love #{cuisine_choice}!"
@@ -147,13 +147,15 @@ class CLI
             else
         system 'clear'
         puts random_phrases.shuffle.first
-        user_price_point = @prompt.select("And finally, how much money do you want to spend?", price_options, min: 1)
-                if user_price_point == "$"
+        user_price_point = @prompt.ask("And finally, how much money do you want to spend on a scale of 1-4?"){ |q| q.in("1-4") }
+                if user_price_point == "1"
                     puts "Ballin' on a budget. Respect!"
-                elsif user_price_point == "$$"
+                elsif user_price_point == "2"
                     puts "Love it, let's find something for ya - "
-                else
-                    puts "Fancy-schmancy ova here! Good for you!"
+                elsif user_price_point == "3"
+                    puts "Ok, out for a date I bet 😘"
+                else 
+                    puts "BIG SPENDER OVA HERE! Good for you!"    
                 end
             end
         sleep(3)
@@ -184,13 +186,13 @@ class CLI
 
 
     def self.api_restaurants(location, price_point, cuisine)
-        #binding.pry
+        binding.pry
         lat_lon = CLI.geocode(location)
         user_lat = lat_lon[:lat]
         user_lon = lat_lon[:lon]
         # url = zomato_url
         # return [Restaurant.create(name: "Munchies", price_point: "$$$", description: "The best joint in town!", street_address: lat_lon.to_s)]
-        response =  RestClient.get "https://developers.zomato.com/api/v2.1/search?count=5&lat=#{user_lat}&lon=#{user_lon}",
+        response =  RestClient.get "https://developers.zomato.com/api/v2.1/search?count=5&lat=#{user_lat}&lon=#{user_lon}&radius=3500&sort=real_distance",
             {content_type: :json, accept: :json, "user-key": "285cd5fbd4736f1cfef4d09c58ef09b4"}
     # response.parse 
 

@@ -11,7 +11,7 @@ class Tools
     #     'https://developers.zomato.com/api/v2.1/geocode?lat=40.7498243&lon=-73.7976337'
     # end
 
-    response =  RestClient.get "https://developers.zomato.com/api/v2.1/search?count=5&lat=40.7498243&lon=-73.7976337",
+    response =  RestClient.get "https://developers.zomato.com/api/v2.1/search?lat=40.7498243&lon=-73.7976337&radius=3000&sort=real_distance",
     {content_type: :json, accept: :json, "user-key": "285cd5fbd4736f1cfef4d09c58ef09b4"}
     # response.parse 
 
