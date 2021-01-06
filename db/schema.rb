@@ -55,6 +55,7 @@ ActiveRecord::Schema.define(version: 2021_01_05_214425) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "favorite?"
+    #favorite should be foreign key in User
   end
 
   create_table "users", force: :cascade do |t|

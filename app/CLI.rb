@@ -146,20 +146,45 @@ class CLI
                 end
             end
         sleep(3)
-        suggestion = Restaurant.all.select{|rest| rest.name if rest.price_point == user_price_point && rest.street_address == user_location}
-        rec = suggestion[0].name
-        puts "Looks like the perfect place for you is #{rec}"
-        sleep(4)
+        #binding.pry
+        @restaurant = CLI.api_restaurants(user_location, user_price_point, cuisine_choice).shuffle.first
+
+       # @restaurant = Restaurant.all.select{|rest| rest.name if rest.price_point == user_price_point && rest.street_address == user_location}.shuffle.first
+        rec = @restaurant.name
+        puts "Looks like the perfect place for you is #{@restaurant.street_address}!"
 
         
+        if !UserRestaurant.find_by(restaurant_id: @restaurant.id) 
+            UserRestaurant.create(user_id: @user.id, restaurant_id: @restaurant.id, favorite?: true) 
+        end
+        
+        sleep(1)
+        ask = @prompt.yes?("We've added #{rec} to you list! Would you like to go again?")
+            if ask == true
+                system 'clear'
+                CLI.new_spot
+            else
+                puts "Glad we could help!"
+                sleep(2)
+                CLI.main_menu
+            end
+     end
+     
 
-        #CLI.exit_helper
 
-
-
+    def self.api_restaurants(location, price_point, cuisine)
+        lat_lon = CLI.geocode(location)
+        return [Restaurant.create(name: "Munchies", price_point: "$$$", description: "The best joint in town!", street_address: lat_lon.to_s)]
+        #returns list of restaurants
     end
 
-    
+    def self.geocode(location)
+        place = Geocoder.search(location).first.coordinates
+        latitude = place[0]
+        longitude = place[1]
+        return {lat: latitude, lon: longitude} 
+    end
+
 
     # def self.fav_restaurant
     #     restaurants = UserRestaurant.select{|user_rest| user_rest.user_id == @user.id && favorite? == true}
