@@ -147,32 +147,52 @@ class CLI
             else
         system 'clear'
         puts random_phrases.shuffle.first
-        user_price_point = @prompt.ask("And finally, how much money do you want to spend on a scale of 1-4?"){ |q| q.in("1-4") }
+        user_price_point = @prompt.ask("And finally, how much money do you want to spend on a scale of 1($$$$)-4($)?"){ |q| q.in("1-4") }
                 if user_price_point == "1"
-                    puts "Ballin' on a budget. Respect!"
+                    puts "BIG SPENDER OVA HERE! Good for you!" 
                 elsif user_price_point == "2"
-                    puts "Love it, let's find something for ya - "
-                elsif user_price_point == "3"
                     puts "Ok, out for a date I bet 😘"
+                elsif user_price_point == "3" 
+                    puts "Love it, let's find something for ya - "
                 else 
-                    puts "BIG SPENDER OVA HERE! Good for you!"    
+                    puts "Ballin' on a budget. Respect!"   
                 end
             end
         sleep(3)
         #binding.pry
-        @restaurant = CLI.api_restaurants(user_location, user_price_point, cuisine_choice).shuffle.first
-
-       # @restaurant = Restaurant.all.select{|rest| rest.name if rest.price_point == user_price_point && rest.street_address == user_location}.shuffle.first
-        rec = @restaurant.name
-        puts "Looks like the perfect place for you is #{@restaurant.street_address}!"
-
+        @restaurant = CLI.api_restaurants(user_location, user_price_point, cuisine_choice)
         
-        if !UserRestaurant.find_by(restaurant_id: @restaurant.id) 
-            UserRestaurant.create(user_id: @user.id, restaurant_id: @restaurant.id, favorite?: true) 
-        end
+        # if !UserRestaurant.find_by(restaurant_id: @restaurant.id) 
+        #     UserRestaurant.create(user_id: @user.id, restaurant_id: @restaurant.id, favorite?: true) 
+        # end
         
+     end
+
+    def self.api_restaurants(location, price_point, cuisine)
+        #binding.pry
+        lat_lon = CLI.geocode(location)
+        user_lat = lat_lon[:lat]
+        user_lon = lat_lon[:lon]
+        # return [Restaurant.create(name: "Munchies", price_point: "$$$", description: "The best joint in town!", street_address: lat_lon.to_s)]
+        response =  RestClient.get "https://developers.zomato.com/api/v2.1/search?count=20&lat=#{user_lat}&lon=#{user_lon}&radius=3500&sort=real_distance",
+            {content_type: :json, accept: :json, "user-key": "285cd5fbd4736f1cfef4d09c58ef09b4"}
+
+    parsed = JSON.parse(response)
+    # puts parsed["restaurants"][0]["restaurant"]["location"]["locality"]
+        price = price_point.to_i
+        rest_level_one = parsed["restaurants"]
+        rest_level_two = rest_level_one.select{|rest| rest["restaurant"]["name"] if rest["restaurant"]["price_range"] == price}
+        sugg = rest_level_two.map{|rest| rest["restaurant"]["name"]}
+        suggestion = sugg.shuffle.first
+            if suggestion == nil
+                puts "Oh dear, we're having trouble with this one, lets try again!"
+                CLI.new_spot
+            end
+        #address = rest_level_two.map{|rest| rest["restaurant"]["address"] if rest["restaurant"]["name"] == suggestion}
+        puts "Have you ever been to #{suggestion}, cuz we think you should try it!"
+
         sleep(1)
-        ask = @prompt.yes?("We've added #{rec} to you list! Would you like to go again?")
+        ask = @prompt.yes?("We've added #{suggestion} to you list! Would you like to go again?")
             if ask == true
                 system 'clear'
                 CLI.new_spot
@@ -181,24 +201,6 @@ class CLI
                 sleep(2)
                 CLI.main_menu
             end
-     end
-     
-
-
-    def self.api_restaurants(location, price_point, cuisine)
-        binding.pry
-        lat_lon = CLI.geocode(location)
-        user_lat = lat_lon[:lat]
-        user_lon = lat_lon[:lon]
-        # url = zomato_url
-        # return [Restaurant.create(name: "Munchies", price_point: "$$$", description: "The best joint in town!", street_address: lat_lon.to_s)]
-        response =  RestClient.get "https://developers.zomato.com/api/v2.1/search?count=5&lat=#{user_lat}&lon=#{user_lon}&radius=3500&sort=real_distance",
-            {content_type: :json, accept: :json, "user-key": "285cd5fbd4736f1cfef4d09c58ef09b4"}
-    # response.parse 
-
-    parsed = JSON.parse(response)
-    puts parsed["restaurants"][0]["restaurant"]["location"]["locality"]
-        #returns list of restaurants
     end
 
     def self.geocode(location)
@@ -208,12 +210,9 @@ class CLI
         return {lat: latitude, lon: longitude} 
     end
 
-
-    # def self.fav_restaurant
-    #     restaurants = UserRestaurant.select{|user_rest| user_rest.user_id == @user.id && favorite? == true}
-    #     restaurants.map{|rest| puts rest.restaurant.name}
-    # end
-
 end
-
-
+# price = price_point.to_i
+# rest_level_one = parsed["restaurants"]
+# rest_level_two = rest_level_one.select{|rest| rest["restaurant"]["name"] if rest["restaurant"]["price_range"] == price}
+# rec = rest_level_two.map{|rest| rest["restaurant"]["name"]}
+# rec.shuffle.first
