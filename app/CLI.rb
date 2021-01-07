@@ -83,9 +83,9 @@ class CLI
 
     def self.rest_history
        # binding.pry
-        restaurants = UserRestaurant.select{|user_rest| user_rest.user_id == @user.id}
+        user_restaurant = UserRestaurant.select{|user_rest| user_rest.user_id == @user.id}
 
-        if restaurants == []
+        if user_restaurant == [] 
             sleep(0.5)
             puts "Looks like you haven't been out yet!"
         else
@@ -139,6 +139,7 @@ class CLI
             if cuisine_choice.nil?
                 cuisine_choice = "Cafe"
             end
+        cuisine_choice = cuisine_choice.capitalize
         system 'clear'
         puts "Nice, we love #{cuisine_choice}!"
         sleep(0.5)
@@ -163,22 +164,19 @@ class CLI
                 end
             end
         sleep(3)
-        #binding.pry
+
         @restaurant = CLI.api_restaurants(user_location, user_price_point, cuisine_choice)
         
-        # if !UserRestaurant.find_by(restaurant_id: @restaurant.id) 
-        #     UserRestaurant.create(user_id: @user.id, restaurant_id: @restaurant.id, favorite?: true) 
-        # end
-        
-     end
+    end
 
     def self.api_restaurants(location, price_point, cuisine)
-        #binding.pry
+
 
         ########    GEOCODER LOCATION FINDER     ###########
         lat_lon = CLI.geocode(location)
         user_lat = lat_lon[:lat]
         user_lon = lat_lon[:lon]
+
 
         #########  API DATA FINDER      ###########
         response =  RestClient.get "https://developers.zomato.com/api/v2.1/search?count=20&lat=#{user_lat}&lon=#{user_lon}&radius=3500&sort=real_distance",
@@ -193,13 +191,12 @@ class CLI
         sugg = rest_level_two.map{|rest| rest["restaurant"]["name"]}
        
         
-        
         ########   CUISINE MATCHER   ########
-        #binding.pry
         rest_level_one = parsed["restaurants"]
         rest_level_three = rest_level_one.find_all{|rest| rest["restaurant"]["name"] if rest["restaurant"]["cuisines"].include? cuisine}
         matched_food = rest_level_three.map{|rest| rest["restaurant"]["name"]}
-#binding.pry
+
+
         results = sugg & matched_food
         real_results = results.shuffle.first
             if real_results == nil
@@ -227,7 +224,7 @@ class CLI
 
 
              ############ MENU OPTIONS HELPER ###########
-ask = @prompt.yes?("We've added #{real_results} to you list! Would you like to go again?")
+        ask = @prompt.yes?("We've added #{real_results} to you list! Would you like to go again?")
             if ask == true
                 system 'clear'
                 CLI.new_spot
@@ -236,7 +233,7 @@ ask = @prompt.yes?("We've added #{real_results} to you list! Would you like to g
                 sleep(2)
                 CLI.main_menu
             end
-    end
+        end
 
     def self.geocode(location)
         place = Geocoder.search(location).first.coordinates
@@ -245,31 +242,4 @@ ask = @prompt.yes?("We've added #{real_results} to you list! Would you like to g
         return {lat: latitude, lon: longitude} 
     end
     
-    # def self.price(price_point)
-    #     lat_lon = CLI.geocode(location)
-    #     user_lat = lat_lon[:lat]
-    #     user_lon = lat_lon[:lon]
-    #     response =  RestClient.get "https://developers.zomato.com/api/v2.1/search?count=50&lat=#{user_lat}&lon=#{user_lon}&radius=3500&sort=real_distance",
-    #         {content_type: :json, accept: :json, "user-key": "285cd5fbd4736f1cfef4d09c58ef09b4"}
-    #     parsed = JSON.parse(response)
-    #     price = price_point.to_i
-    #     rest_level_one = parsed["restaurants"]
-    #     rest_level_two = rest_level_one.select{|rest| rest["restaurant"]["name"] if rest["restaurant"]["price_range"] == price}
-    #     sugg = rest_level_two.map{|rest| rest["restaurant"]["name"]}
-    #     suggestion = sugg.shuffle.first
-    #     suggestion
-    # end
-    
-    # def self.foods(cuisine)
-        
-    # end
-
-
-
-
 end
-# price = price_point.to_i
-# rest_level_one = parsed["restaurants"]
-# rest_level_two = rest_level_one.select{|rest| rest["restaurant"]["name"] if rest["restaurant"]["price_range"] == price}
-# rec = rest_level_two.map{|rest| rest["restaurant"]["name"]}
-# rec.shuffle.first
