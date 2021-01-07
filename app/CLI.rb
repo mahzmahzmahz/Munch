@@ -2,7 +2,7 @@ require "tty-prompt"
 require "tty-font"
 require "pry"
 require 'geocoder'
-
+#elvis can pull now
 
 class CLI
 
@@ -174,10 +174,10 @@ class CLI
         user_lat = lat_lon[:lat]
         user_lon = lat_lon[:lon]
         # return [Restaurant.create(name: "Munchies", price_point: "$$$", description: "The best joint in town!", street_address: lat_lon.to_s)]
-        response =  RestClient.get "https://developers.zomato.com/api/v2.1/search?count=20&lat=#{user_lat}&lon=#{user_lon}&radius=3500&sort=real_distance",
+        response =  RestClient.get "https://developers.zomato.com/api/v2.1/search?count=50&lat=#{user_lat}&lon=#{user_lon}&radius=3500&sort=real_distance",
             {content_type: :json, accept: :json, "user-key": "285cd5fbd4736f1cfef4d09c58ef09b4"}
 
-    parsed = JSON.parse(response)
+        parsed = JSON.parse(response)
     # puts parsed["restaurants"][0]["restaurant"]["location"]["locality"]
         price = price_point.to_i
         rest_level_one = parsed["restaurants"]
@@ -209,7 +209,8 @@ class CLI
         longitude = place[1]
         return {lat: latitude, lon: longitude} 
     end
-
+    
+    
 end
 # price = price_point.to_i
 # rest_level_one = parsed["restaurants"]
