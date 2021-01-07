@@ -24,11 +24,11 @@ class User < ActiveRecord::Base
     #     @@favorite << favorite 
     # end
 
-def add_restaurant_to_favorites(restaurant)
-    UserRestaurant.create(user_id: self.id, restaurant_id: restaurant)
+def add_restaurant_to_history(restaurant)
+    UserRestaurant.create(user_id: self.id, restaurant_id: restaurant.id)
 end
 
-def remove_restaurant_from_favs(restaurant)
+def remove_restaurant_from_history(restaurant)
     rest = UserRestaurant.where(user_id: self.id, restaurant_id: restaurant)
     rest.destroy_all
 end
@@ -36,6 +36,13 @@ end
 def remove_profile
     self.destroy
 end
-  
+
+def all_restaurants
+    #binding.pry
+    restaurants = UserRestaurant.select{|user_rest| user_rest.user_id == @user.id}
+    restaurants.name
+end
+
+
 
 end
