@@ -123,18 +123,22 @@ class CLI
     
 
     def self.bye_bye
-        @user.remove_profile
         system 'clear'
-        puts "Whatever, you'll be back..."
+        ask = @prompt.yes? ("Are you sure you want to delete your profile?")
+            if ask == true
+                @user.remove_profile
+                system 'clear'
+                puts "Whatever, you'll be back..."
+            else
+                CLI.main_menu
+            end
     end
 
 
 
     def self.new_spot
         random_phrases = ["Oh wow, my cousin lives there! Do you know a large man named Tommy?", "Oh jeez, the subway there is a mess huh?", "I lived there when I moved here! It's the best, right?"]
-        #cuisines = ["Italian", "American", "Chinese", "Indian", "Fast-food", "Pizza", "Mexican", "Other"]
         boroughs = ["Staten Island", "Queens", "Brooklyn","The Bronx", "Manhattan", "I don't live in NYC..."]
-        #price_options = [1, 2, "$$$"]
         cuisine_choice = @prompt.ask("What are you craving? Ex: Italian, Chinese, Mexican etc.")
             if cuisine_choice.nil?
                 cuisine_choice = "Cafe"
