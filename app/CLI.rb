@@ -68,7 +68,6 @@ class CLI
         sleep(0.5)
         @prompt.select("What Brings You Here?") do |menu|
             menu.choice "Restaurant History", -> {CLI.rest_history}
-            menu.choice "View my favorite restaurants", -> {CLI.fav_restaurant}
             menu.choice "Find a new spot", -> {CLI.new_spot}
             menu.choice "Delete Profile", -> {CLI.bye_bye}
             menu.choice "Exit", -> {CLI.exit_helper}
@@ -83,14 +82,15 @@ class CLI
     end
 
     def self.rest_history
-        #binding.pry
+       # binding.pry
         restaurants = UserRestaurant.select{|user_rest| user_rest.user_id == @user.id}
 
         if restaurants == []
             sleep(0.5)
             puts "Looks like you haven't been out yet!"
         else
-           puts restaurants.map{|rest| rest.restaurant.name}
+            puts @user.restaurants.map{|rest| rest.name}.uniq
+            
         end
 
         sleep(1)
@@ -220,9 +220,9 @@ class CLI
 
 
             ############ CREATE AND STORE RESTAURANT  ##############
-            binding.pry 
+            #binding.pry 
         restaurant = Restaurant.create(name: "#{real_results}" , price_point: "#{price_point}", description: "#{cuisine}", street_address: "#{address}")
-        @user.add_restaurant_to_history(restaurant)
+        UserRestaurant.create(user_id: @user.id, restaurant_id: restaurant.id)
 
 
 
