@@ -97,7 +97,7 @@ class CLI
         @prompt.select("Would you like to return to the main Menu, clear your list, or are we all good here?") do |menu|
             menu.choice "Main Menu", -> {CLI.main_menu}
             menu.choice "Clear My History", -> {CLI.clear_history}
-            menu.choice "I'm all good, thx!", -> {CLI.exit_helper}
+            #menu.choice "I'm all good, thx!", -> {CLI.exit_helper}
         end
     
         
@@ -183,7 +183,7 @@ class CLI
 
 
         #########  API DATA FINDER      ###########
-        response =  RestClient.get "https://developers.zomato.com/api/v2.1/search?count=20&lat=#{user_lat}&lon=#{user_lon}&radius=3500&sort=real_distance",
+        response =  RestClient.get "https://developers.zomato.com/api/v2.1/search?count=20&lat=#{user_lat}&lon=#{user_lon}&radius=8046.72&sort=real_distance",
             {content_type: :json, accept: :json, "user-key": "285cd5fbd4736f1cfef4d09c58ef09b4"}
         parsed = JSON.parse(response)
         
