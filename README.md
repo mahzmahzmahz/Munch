@@ -1,6 +1,9 @@
-# Welcome to Munch!!
+# Munch
+> Find what's cookin in your neighborhood!
 
-Ever wonder what new and exciting restaurants are around your neighborhood?? Do you live in New York City? Well then we've got what you need. Munch is your basic CLI (Command Line Interface) application that generates a restaurant based on your location, desired price range, and cuisine of preference. 
+> Developed by Alex Marz and Elvis Landi
+
+Ever wonder what new and exciting restaurants are in your neighborhood? Do you live in New York City? Well then we've got what you need. Munch is a CLI (Command Line Interface) application that generates a restaurant suggestion for the user unique to their location, desired price range, and cuisine of preference. 
 
 ---
 
@@ -15,6 +18,8 @@ Ever wonder what new and exciting restaurants are around your neighborhood?? Do 
      - [3.4 Geocoder](#34-Geocoder)
      - [3.5 Zomato API](#35-Zomato-API)
      - [3.6 CLI](#36-CLI)
+
+ - [4. Expansion Goals](#4-expansion-goals)
 
 ## 1. Associations 
 Munch is a 7-model domain: `User`, `UserRestaurant`, `Restaurant`, `UserStyle`, `Style`, `UserLocation`, `Location`. 
@@ -46,16 +51,15 @@ RestLoc >—Location
 
 ## 3. Functionality
     
-At first glance our ERD seems extensive, however much of this can be simplified and navigated around through the use of our API (Application Programming Interface), which we will discuss further ahead.
+At first glance our ERD seems extensive, however much of this can be simplified and navigated around through the use of our API (Application Programming Interface), which we will discuss.
 
 
 ### 3.1 User
 
 Within our User model you will find helper methods that assisted our app from within the CLI.rb model. These helper methods allowed the app to destroy and create features specific to the User. 
 
-The following method is used to destroy an entire account.
+For example, the following User class method is called on within the CLI model to destroy an User's account.
 
-e.g..,
 ```
     def remove_profile
         self.destroy
@@ -72,46 +76,58 @@ This model helped connect the User and Restaurant models together within our app
 
 ### 3.4 Geocoder 
 
+The Geocoder gem is a marvel that will be heavily featured in an upcoming blog post written by Alex Marz, Co-Founder of Munch. 
 
+Essentially, this gem has the ability to take in a location (Queens, The Statue of Liberty, 1600 Pennsylvania Ave) and deliver to you the exact longitude and latitude of said location. 
+```
+  def self.geocode(location)
+        place = Geocoder.search(location).first.coordinates
+        latitude = place[0]
+        longitude = place[1]
+        return {lat: latitude, lon: longitude} 
+    end
+```
+The code above is a class method simply performing ONE OF the capabilities of Geocoder and displaying its explicit results. In the Munch app, the argument of location is filled by the User's selection of one of the five boroughs of NYC. The longitude and latitude are then returned. 
+
+These longitudes and latitudes are then plugged into the Zomato API, which we will discuss in the following section.
 
 
 ### 3.5 Zomato API
 
-The single most important element in our entire app was thanks to the help of this little beauty right here. It provided us with the seed data needed in order for our app to make any sense. 
+The single most important element of our entire app this little beauty right here. It provided us with the data needed to make our app functional. 
 
 ```
-        response =  RestClient.get "https://developers.zomato.com/api/v2.1/search?count=20&lat=#{user_lat}&lon=#{user_lon}&radius=3500&sort=real_distance",
+response =  RestClient.get "https://developers.zomato.com/api/v2.1/search?count=20&lat=#{user_lat}&lon=#{user_lon}&radius=3500&sort=real_distance",
             {content_type: :json, accept: :json, "user-key": "APIKEY"}
-        parsed = JSON.parse(response)
 ```
-These 6 lines of code are responsible for providing us with all the restaurant information needed for New York City (for now).
+These 6 lines of code are responsible for providing us with all the restaurant information within the confines of New York City (for now).
 
 ```
 count=20
 ```
-The count reflects the maximum ammount of restaurants we were able to feed into our app as allowed by the Zomato API. 
+The count reflects the maximum ammount of restaurant information we were allowed to gather the Zomato API. This info was then iterated over and over to pull out our specific data.
 
 ```
 lat=#{user_lat}&lon=#{user_lon}
 ```
-This, together with our Geocoder Gem, allowed us to specify the exact location (Queens, Brooklyn, Staten Island, etc..) and return restaurants from these specific areas. 
+This, together with our Geocoder Gem, allowed us to specify the exact location (Queens, Brooklyn, Staten Island, etc..) and return restaurants from ONLY these specific areas. 
 
 
 ```
 radius=3500
 ```
-By setting a radius of 3500 meters, we are able to seach within each of the five boroughs with a wider range. 
+By setting a radius of 3500 meters, we are able to seach for restaurants over a large area, while still remaining within the User-specified borough. 
 
 ```
 sort=real_distance
 ```
 
-After several failed attempts and an increase of restaurants within the Mount Gambier area of Australia, we were able to consistentally return results within the five boroughs thanks to this.
+After several failed attempts, and an increase of knowledge of the restaurants within the Mount Gambier area of Australia, we were able to consistently return results within the five boroughs thanks to this.
 
 
 ### 3.6 CLI
 
-The CLI (Command Line Interface) model is the bread and butter, and toaster, and kitchen, and house, of our app. Within lies a series of sophisticated class methods call upon each other guiding the User through features that Munch offers. 
+The CLI (Command Line Interface) model is the bread, butter, toaster, kitchen, and house of our app. Within it lies a series of sophisticated class methods that call upon each other, guiding the User through features that Munch offers. 
 
 
 
@@ -120,16 +136,17 @@ The CLI (Command Line Interface) model is the bread and butter, and toaster, and
 cuisine_choice)
 ```
 
-This....single line of code means more to us than most people we know...
+This...single line of code means more to us than most people we know...
 
 
-### Expansion Goals
+## Expansion Goals
 
-As we referenced above the Zomato Api is not limited to NYC.
+As we hinted above the Zomato Api is not limited to NYC.
 In fact with just a few modifications we could make this app function on a global scale by changing the longitude and latitude. 
 
 The api also provides us with the restaurants menu, delivery ability, available reservations, and so much more. 
 Over time it would be possible to make Munch the next UberEats and Yelp all in one.
+
 
 
 
